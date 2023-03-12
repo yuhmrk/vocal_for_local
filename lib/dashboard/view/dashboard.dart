@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vocal_for_local/dashboard/controller/controller.dart';
+import 'package:vocal_for_local/dashboard/controller/dashboard_controller.dart';
 import 'package:vocal_for_local/utils/colors.dart';
 
 import '../../cart/view/cart_screen.dart';

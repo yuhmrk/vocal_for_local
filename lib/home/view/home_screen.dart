@@ -5,6 +5,7 @@ import 'package:vocal_for_local/utils/size_constants.dart';
 import 'banner_widget.dart';
 import 'drawer_widget.dart';
 import 'homepage_display_item.dart';
+import 'homepage_display_products_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -48,49 +49,10 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             const BannerCrousel(),
-            const HomepageDisplayProdutcs(productListName: "Featured Product"),
-            const HomepageDisplayProdutcs(productListName: "Liked Products"),
+            HomepageDisplayProducts(productListName: "Featured Product"),
+            // HomepageDisplayProducts(productListName: "Liked Products"),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class HomepageDisplayProdutcs extends StatelessWidget {
-  const HomepageDisplayProdutcs({
-    Key? key,
-    required this.productListName,
-  }) : super(key: key);
-
-  final String productListName;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(SizeConstants.appPadding),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(productListName, style: Theme.of(context).textTheme.subtitle1),
-          const SizedBox(
-            height: 10,
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.315,
-            width: MediaQuery.of(context).size.width,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 3,
-              itemBuilder: (context, index) => const HomePageDisplayItem(
-                productImagePath: "assets/images/image_one.jpg",
-                productName: "product name",
-                productPrice: "Rs. 200",
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

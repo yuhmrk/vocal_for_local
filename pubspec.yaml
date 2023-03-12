@@ -42,6 +42,10 @@ dependencies:
   flutter_widget_from_html: ^0.9.1
   shared_preferences: ^2.0.18
   cloud_firestore: ^4.4.3
+  loader_overlay: ^2.1.0
+  connectivity_plus: ^3.0.3
+  cached_network_image: ^3.2.3
+
 
 
 

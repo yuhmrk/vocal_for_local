@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils/colors.dart';
@@ -29,12 +30,23 @@ class HomePageDisplayItem extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  child: Image.asset(
-                    productImagePath,
-                    height: MediaQuery.of(context).size.height * 0.15,
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    fit: BoxFit.fill,
+                  child: CachedNetworkImage(
+                    imageUrl: productImagePath,
+                    imageBuilder: (context, imageProvider) {
+                      return Ink.image(
+                        image: imageProvider,
+                        fit: BoxFit.fill,
+                      );
+                    },
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
+                  // child: Image.network(
+                  //   productImagePath,
+                  //   height: MediaQuery.of(context).size.height * 0.15,
+                  //   width: MediaQuery.of(context).size.width * 0.25,
+                  //   fit: BoxFit.fill,
+                  // ),
                 ),
                 const SizedBox(
                   height: 10,
