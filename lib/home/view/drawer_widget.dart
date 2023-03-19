@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vocal_for_local/terms_and_conditions/view/terms_and_conditions.dart';
+import 'package:vocal_for_local/videos/view/videos_list_screen.dart';
 
 Drawer customDrawer(BuildContext context) {
   return Drawer(
@@ -51,6 +52,15 @@ Drawer customDrawer(BuildContext context) {
         Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            ListTile(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const VideosListScreen(),
+                ));
+              },
+              leading: const Icon(Icons.video_collection),
+              title: const Text("Videos"),
+            ),
             ListTile(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(

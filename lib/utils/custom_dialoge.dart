@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 
 class CustomDialog {
-  Future<void> dialog(BuildContext context, Function onPress) {
+  Future<void> dialog(
+      {required BuildContext context,
+      required Function onPress,
+      required String title,
+      required String content,
+      required String successButtonName,
+      required bool isCancelAvailable}) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('No internet connection'),
-          content: const Text('check your internet connectivity'),
+          title: Text(title),
+          content: Text(content),
           actions: <Widget>[
             TextButton(
               style: TextButton.styleFrom(
@@ -16,16 +22,19 @@ class CustomDialog {
               onPressed: () {
                 return onPress();
               },
-              child: const Text('Retry'),
+              child: Text(successButtonName),
             ),
-            TextButton(
-              style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge,
+            Visibility(
+              visible: isCancelAvailable == true,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: Theme.of(context).textTheme.labelLarge,
+                ),
+                child: const Text('cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               ),
-              child: const Text('cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
             ),
           ],
         );

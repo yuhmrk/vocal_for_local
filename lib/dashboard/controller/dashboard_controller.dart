@@ -22,10 +22,16 @@ class DashboardController {
       }
     } catch (error) {
       if (error == FirebaseCollections.noInternetString) {
-        CustomDialog().dialog(context, () {
-          Navigator.pop(context);
-          signout(context);
-        });
+        CustomDialog().dialog(
+            context: context,
+            onPress: () {
+              Navigator.pop(context);
+              signout(context);
+            },
+            isCancelAvailable: true,
+            successButtonName: "Retry",
+            title: "No internet connection",
+            content: "check your internet connectivity");
       }
     }
   }

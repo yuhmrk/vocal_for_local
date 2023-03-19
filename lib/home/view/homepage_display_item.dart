@@ -28,26 +28,26 @@ class HomePageDisplayItem extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  child: CachedNetworkImage(
-                    imageUrl: productImagePath,
-                    imageBuilder: (context, imageProvider) {
-                      return Ink.image(
-                        image: imageProvider,
-                        fit: BoxFit.fill,
-                      );
-                    },
-                    placeholder: (context, url) => CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
-                  // child: Image.network(
-                  //   productImagePath,
-                  //   height: MediaQuery.of(context).size.height * 0.15,
-                  //   width: MediaQuery.of(context).size.width * 0.25,
-                  //   fit: BoxFit.fill,
-                  // ),
-                ),
+                // ClipRRect(
+                //   borderRadius: const BorderRadius.all(Radius.circular(20)),
+                //   child: CachedNetworkImage(
+                //     imageUrl: productImagePath,
+                //     imageBuilder: (context, imageProvider) {
+                //       return Ink.image(
+                //         image: imageProvider,
+                //         fit: BoxFit.fill,
+                //       );
+                //     },
+                //     placeholder: (context, url) => CircularProgressIndicator(),
+                //     errorWidget: (context, url, error) => Icon(Icons.error),
+                //   ),
+                //   // child: Image.network(
+                //   //   productImagePath,
+                //   //   height: MediaQuery.of(context).size.height * 0.15,
+                //   //   width: MediaQuery.of(context).size.width * 0.25,
+                //   //   fit: BoxFit.fill,
+                //   // ),
+                // ),
                 const SizedBox(
                   height: 10,
                 ),

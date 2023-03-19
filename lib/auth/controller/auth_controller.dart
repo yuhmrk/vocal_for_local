@@ -22,10 +22,16 @@ Future<bool> signup(BuildContext context) async {
     }
   } catch (error) {
     if (error == FirebaseCollections.noInternetString) {
-      CustomDialog().dialog(context, () {
-        Navigator.pop(context);
-        signup(context);
-      });
+      CustomDialog().dialog(
+          context: context,
+          onPress: () {
+            Navigator.pop(context);
+            signup(context);
+          },
+          isCancelAvailable: true,
+          successButtonName: "Retry",
+          title: "No internet connection",
+          content: "check your internet connectivity");
     }
   }
   return isSuccess;
