@@ -18,7 +18,7 @@ class _VideosListScreenState extends State<VideosListScreen> {
   Stream<QuerySnapshot>? _videosStream;
   DocumentSnapshot? currentUser;
   Map<String, dynamic>? currentUserMap;
-  List? authVideoListId;
+  List? authVideoListId = [];
   Map<String, dynamic> selectedVideoData = {};
   Razorpay _razorpay = Razorpay();
 
@@ -39,13 +39,64 @@ class _VideosListScreenState extends State<VideosListScreen> {
   }
 
   fetchCurrentUser(BuildContext context) async {
-    context.loaderOverlay.show();
+    /*
+       context.loaderOverlay.show();
     currentUser = await FirebaseFirestore.instance
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get();
     currentUserMap = currentUser!.data() as Map<String, dynamic>;
     authVideoListId = currentUserMap!["auth_videos_id"];
+    DateTime currentDate = DateTime.now();
+    List tempVideoList = [];
+    for (int i = 0; i < authVideoListId!.length; i++) {
+      Timestamp videoDate = authVideoListId![i]["duration"];
+      DateTime compareDate =
+          DateTime.fromMillisecondsSinceEpoch(videoDate.millisecondsSinceEpoch);
+      bool isBefore = currentDate.isBefore(compareDate);
+      if (isBefore) {
+        // remove the video id
+        tempVideoList.add(authVideoListId![i]);
+      }
+    }
+    if (authVideoListId!.length > tempVideoList.length) {
+      authVideoListId = tempVideoList;
+      FirebaseFirestore.instance
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .update({"auth_videos_id": authVideoListId});
+    }*/
+
+    context.loaderOverlay.show();
+    currentUser = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    currentUserMap = currentUser!.data() as Map<String, dynamic>;
+
+    if (currentUserMap!["auth_videos_id"] != null) {
+      authVideoListId = currentUserMap!["auth_videos_id"];
+    }
+
+    DateTime currentDate = DateTime.now();
+    List tempVideoList = [];
+    for (int i = 0; i < authVideoListId!.length; i++) {
+      Timestamp videoDate = authVideoListId![i]["duration"];
+      DateTime compareDate =
+          DateTime.fromMillisecondsSinceEpoch(videoDate.millisecondsSinceEpoch);
+      bool isValid = currentDate.isBefore(compareDate);
+      if (isValid) {
+        tempVideoList.add(authVideoListId![i]);
+      }
+    }
+    if (authVideoListId!.length > tempVideoList.length) {
+      authVideoListId = tempVideoList;
+      FirebaseFirestore.instance
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .update({"auth_videos_id": authVideoListId});
+    }
+
     context.loaderOverlay.hide();
     setState(() {});
   }
@@ -77,7 +128,11 @@ class _VideosListScreenState extends State<VideosListScreen> {
     Logger().d(
       "SUCCESS: ${response.paymentId}",
     );
-    authVideoListId!.add(selectedVideoData["id"]);
+
+    DateTime videoExpiryDate = DateTime.now()
+        .subtract(Duration(days: selectedVideoData["videoAvailableDays"]));
+    authVideoListId!
+        .add({"id": selectedVideoData["id"], "duration": videoExpiryDate});
     setState(() {});
     FirebaseFirestore.instance
         .collection("users")
@@ -151,6 +206,8 @@ class _VideosListScreenState extends State<VideosListScreen> {
                         snapshot.data!.docs.map((DocumentSnapshot document) {
                       Map<String, dynamic> data =
                           document.data()! as Map<String, dynamic>;
+                      bool isVideoAvailable = authVideoListId!.any((element) =>
+                          element.values.contains(data["id"]) as bool);
                       return ListTile(
                         onTap: () {
                           if (authVideoListId!.contains(data["id"])) {
@@ -177,7 +234,7 @@ class _VideosListScreenState extends State<VideosListScreen> {
                           }
                         },
                         title: Text(data["title"]),
-                        trailing: authVideoListId!.contains(data["id"])
+                        trailing: isVideoAvailable
                             ? const Icon(Icons.lock_open)
                             : const Icon(Icons.lock),
                       );

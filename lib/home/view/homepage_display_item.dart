@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 import '../../utils/colors.dart';
 import '../../utils/size_constants.dart';
@@ -10,9 +11,11 @@ class HomePageDisplayItem extends StatelessWidget {
     required this.productImagePath,
     required this.productName,
     required this.productPrice,
+    required this.onTap,
   }) : super(key: key);
 
   final String productImagePath, productName, productPrice;
+  final Function onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -28,26 +31,14 @@ class HomePageDisplayItem extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                // ClipRRect(
-                //   borderRadius: const BorderRadius.all(Radius.circular(20)),
-                //   child: CachedNetworkImage(
-                //     imageUrl: productImagePath,
-                //     imageBuilder: (context, imageProvider) {
-                //       return Ink.image(
-                //         image: imageProvider,
-                //         fit: BoxFit.fill,
-                //       );
-                //     },
-                //     placeholder: (context, url) => CircularProgressIndicator(),
-                //     errorWidget: (context, url, error) => Icon(Icons.error),
-                //   ),
-                //   // child: Image.network(
-                //   //   productImagePath,
-                //   //   height: MediaQuery.of(context).size.height * 0.15,
-                //   //   width: MediaQuery.of(context).size.width * 0.25,
-                //   //   fit: BoxFit.fill,
-                //   // ),
-                // ),
+                ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  child: CachedNetworkImage(
+                    imageUrl: productImagePath,
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+                ),
                 const SizedBox(
                   height: 10,
                 ),
@@ -78,7 +69,9 @@ class HomePageDisplayItem extends StatelessWidget {
                         child: ColoredBox(
                           color: ThemeColors.primaryColor,
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              return onTap();
+                            },
                             icon: const Icon(Icons.add),
                             color: Colors.white,
                           ),
