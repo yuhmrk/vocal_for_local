@@ -339,7 +339,7 @@ packages:
     source: hosted
     version: "0.9.1"
   fluttertoast:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: fluttertoast
       url: "https://pub.dartlang.org"

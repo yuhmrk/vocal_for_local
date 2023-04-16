@@ -58,5 +58,6 @@ class HomepageProductController {
         return;
       }
     }
+    CustomFunction().showToast("Added To Cart");
   }
 }

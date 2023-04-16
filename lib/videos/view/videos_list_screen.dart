@@ -39,34 +39,6 @@ class _VideosListScreenState extends State<VideosListScreen> {
   }
 
   fetchCurrentUser(BuildContext context) async {
-    /*
-       context.loaderOverlay.show();
-    currentUser = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    currentUserMap = currentUser!.data() as Map<String, dynamic>;
-    authVideoListId = currentUserMap!["auth_videos_id"];
-    DateTime currentDate = DateTime.now();
-    List tempVideoList = [];
-    for (int i = 0; i < authVideoListId!.length; i++) {
-      Timestamp videoDate = authVideoListId![i]["duration"];
-      DateTime compareDate =
-          DateTime.fromMillisecondsSinceEpoch(videoDate.millisecondsSinceEpoch);
-      bool isBefore = currentDate.isBefore(compareDate);
-      if (isBefore) {
-        // remove the video id
-        tempVideoList.add(authVideoListId![i]);
-      }
-    }
-    if (authVideoListId!.length > tempVideoList.length) {
-      authVideoListId = tempVideoList;
-      FirebaseFirestore.instance
-          .collection("users")
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .update({"auth_videos_id": authVideoListId});
-    }*/
-
     context.loaderOverlay.show();
     currentUser = await FirebaseFirestore.instance
         .collection("users")
