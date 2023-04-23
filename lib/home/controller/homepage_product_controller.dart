@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:logger/logger.dart';
 
 import '../../utils/custom_function.dart';
 import '../../utils/shared_preference.dart';
@@ -59,5 +61,34 @@ class HomepageProductController {
       }
     }
     CustomFunction().showToast("Added To Cart");
+  }
+
+  Future<List<String>> fetchProducts() async {
+    List<String> likedProducts = [];
+    DocumentSnapshot<Map<String, dynamic>> currentUserData =
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(FirebaseAuth.instance.currentUser?.uid ?? "")
+            .get();
+    Map<String, dynamic>? mapCurrentUser = currentUserData.data();
+    if (mapCurrentUser!["liked_products"] != null) {
+      for (int i = 0; i < mapCurrentUser["liked_products"].length; i++) {
+        likedProducts.add(mapCurrentUser["liked_products"][i].toString());
+      }
+    }
+    return likedProducts;
+  }
+
+  Future<void> addOrRemoveFromLike(
+      bool isLiked, List<String> likedProducts, String productId) async {
+    if (isLiked == true) {
+      likedProducts.remove(productId);
+    } else {
+      likedProducts.add(productId);
+    }
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid ?? "")
+        .update({"liked_products": likedProducts});
   }
 }

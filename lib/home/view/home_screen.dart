@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:vocal_for_local/search/view/search_screen.dart';
 import 'package:vocal_for_local/utils/colors.dart';
 import 'package:vocal_for_local/utils/size_constants.dart';
 import 'banner_widget.dart';
@@ -40,6 +41,17 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SearchScreen(),
+                    ));
+              },
+              icon: Icon(Icons.search))
+        ],
         elevation: 1,
         backgroundColor: Colors.white,
       ),

@@ -59,6 +59,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 width: double.infinity,
                 margin: const EdgeInsets.only(top: 20),
                 child: ListView.separated(
+                  shrinkWrap: true,
                   itemCount: widget.productData["product_image"].length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) => InkWell(

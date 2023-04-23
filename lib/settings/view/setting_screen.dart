@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vocal_for_local/liked_products/view/liked_products_screen.dart';
 import 'package:vocal_for_local/orders/view/order_list_screen.dart';
 
 import '../../dashboard/controller/dashboard_controller.dart';
@@ -13,7 +14,7 @@ class SettingsScreen extends StatelessWidget {
         children: [
           SizedBox(
               height: MediaQuery.of(context).size.height / 2,
-              child: Center(child: Text("your logo"))),
+              child: const Center(child: Text("your logo"))),
           ListTile(
             title: const Text("Orders"),
             trailing: const Icon(Icons.chevron_right),
@@ -21,8 +22,12 @@ class SettingsScreen extends StatelessWidget {
               builder: (context) => const OrderListScreen(),
             )),
           ),
-          const ListTile(
-            title: Text("Liked Products"),
+          ListTile(
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const LikedProductsScreen(),
+            )),
+            trailing: const Icon(Icons.chevron_right),
+            title: const Text("Liked Products"),
           )
         ],
       ),

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:logger/logger.dart';
 import 'package:vocal_for_local/home/controller/homepage_product_controller.dart';
 import 'package:vocal_for_local/product_detail/view/product_detail_screen.dart';
 
@@ -9,31 +11,45 @@ import '../../utils/shared_preference.dart';
 import '../../utils/size_constants.dart';
 import 'homepage_display_item.dart';
 
-class HomepageDisplayProducts extends StatelessWidget {
+class HomepageDisplayProducts extends StatefulWidget {
   HomepageDisplayProducts({
     Key? key,
     required this.productListName,
     this.categoryName = "",
   }) : super(key: key);
 
-  Stream<QuerySnapshot>? _productsStream;
   final String productListName, categoryName;
 
-  /*
-  * "abc" == "abc"
-  *  ["abc","def"] == "abc"
-  * */
+  @override
+  State<HomepageDisplayProducts> createState() =>
+      _HomepageDisplayProductsState();
+}
+
+class _HomepageDisplayProductsState extends State<HomepageDisplayProducts> {
+  Stream<QuerySnapshot>? _productsStream;
+  List<String> likedProducts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchLikedProduct();
+  }
+
+  Future fetchLikedProduct() async {
+    likedProducts = await HomepageProductController().fetchProducts();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
-    categoryName == ""
+    widget.categoryName == ""
         ? _productsStream = FirebaseFirestore.instance
             .collection('products')
             .orderBy("product_name", descending: false)
             .snapshots()
         : _productsStream = FirebaseFirestore.instance
             .collection('products')
-            .where("category", arrayContains: categoryName)
+            .where("category", arrayContains: widget.categoryName)
             .orderBy("product_name", descending: false)
             .snapshots();
     return Padding(
@@ -42,7 +58,8 @@ class HomepageDisplayProducts extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(productListName, style: Theme.of(context).textTheme.subtitle1),
+          Text(widget.productListName,
+              style: Theme.of(context).textTheme.subtitle1),
           const SizedBox(
             height: 10,
           ),
@@ -68,6 +85,10 @@ class HomepageDisplayProducts extends StatelessWidget {
                           snapshot.data!.docs.map((DocumentSnapshot document) {
                         Map<String, dynamic> productData =
                             document.data()! as Map<String, dynamic>;
+
+                        bool isLiked =
+                            likedProducts.contains(productData["id"]);
+
                         return InkWell(
                           onTap: () {
                             Navigator.push(
@@ -77,14 +98,38 @@ class HomepageDisplayProducts extends StatelessWidget {
                                       productData: productData),
                                 ));
                           },
-                          child: HomePageDisplayItem(
-                            productImagePath: productData["product_image"][0],
-                            productName: productData["product_name"],
-                            productPrice: productData["price"],
-                            onTap: () async {
-                              await HomepageProductController()
-                                  .addProductToCart(context, productData);
-                            },
+                          child: Stack(
+                            children: [
+                              HomePageDisplayItem(
+                                productImagePath: productData["product_image"]
+                                    [0],
+                                productName: productData["product_name"],
+                                productPrice: productData["price"],
+                                onTap: () async {
+                                  await HomepageProductController()
+                                      .addProductToCart(context, productData);
+                                },
+                              ),
+                              Positioned(
+                                top: 10,
+                                right: 10,
+                                child: IconButton(
+                                    onPressed: () async {
+                                      HomepageProductController()
+                                          .addOrRemoveFromLike(isLiked,
+                                              likedProducts, productData["id"]);
+                                      setState(() {});
+                                    },
+                                    icon: Icon(
+                                      isLiked == true
+                                          ? Icons.favorite
+                                          : Icons.favorite_border_outlined,
+                                      color: isLiked == true
+                                          ? Colors.red
+                                          : Colors.white,
+                                    )),
+                              )
+                            ],
                           ),
                         );
                       }).toList(),

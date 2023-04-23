@@ -27,7 +27,7 @@ class OrderDetailScreen extends StatelessWidget {
             trailing: Text("x" + productList[index]["count"].toString()),
           ),
         ),
-        Spacer(),
+        const Spacer(),
         Padding(
           padding: EdgeInsets.all(SizeConstants.itemPadding),
           child: Row(
