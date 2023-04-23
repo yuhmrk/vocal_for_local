@@ -6,6 +6,7 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:logger/logger.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:vocal_for_local/cart/controller/cart_controller.dart';
+import 'package:vocal_for_local/orders/view/order_list_screen.dart';
 import 'package:vocal_for_local/utils/shared_preference.dart';
 import 'package:vocal_for_local/utils/size_constants.dart';
 
@@ -53,41 +54,72 @@ class _CartScreenState extends State<CartScreen> {
     }
   }
 
+  moveDocumentToOtherCollection(String docId, String paymentId) async {
+    var db = FirebaseFirestore.instance;
+    var oldColl = db.collection('cart').doc(docId);
+    var newColl = db.collection('orderHistory').doc(oldColl.id);
+
+    DocumentSnapshot? snapshot = await oldColl.get().then((docSnapshot) {
+      if (docSnapshot.exists) {
+        // document id does exist
+        print('Successfully found document');
+        Map<String, dynamic> setNewData = docSnapshot.data()!;
+        setNewData["created_at"] = DateTime.now();
+        setNewData["uid"] = FirebaseAuth.instance.currentUser?.uid;
+        setNewData["order_amount"] = cartTotal;
+        setNewData["payment_id"] = paymentId;
+        newColl
+            .set(setNewData)
+            .then((value) => print("document moved to orderHistory collection"))
+            .catchError((error) => print("Failed to move document: $error"))
+            .then((value) {
+          Shared_Preference.remove("currentOrderId");
+          return ({
+            oldColl
+                .delete()
+                .then((value) => print("document removed from old collection"))
+                .catchError((error) {
+              newColl.delete();
+              print("Failed to delete document: $error");
+            })
+          });
+        });
+      } else {
+        //document id doesnt exist
+        print('Failed to find document id');
+      }
+      return null;
+    });
+  }
+
   Future<void> _handlePaymentSuccess(PaymentSuccessResponse response) async {
     this.context.loaderOverlay.show();
     Logger().d(
       "SUCCESS: ${response.paymentId}",
     );
     if (response.paymentId != null && response.paymentId != "") {
-      await CartController().clearCart();
+      await moveDocumentToOtherCollection(
+          Shared_Preference.getString("currentOrderId"),
+          response.paymentId ?? "");
+
+      CustomDialog().dialog(
+          context: context,
+          onPress: () {
+            print("orderButton calling");
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OrderListScreen(),
+                ));
+          },
+          isCancelAvailable: true,
+          title: "Payment Success",
+          successButtonName: "View Order",
+          content:
+              "Congrats...\nYour order is successfully placed...\nDo you want to view your order?");
+
+      this.context.loaderOverlay.hide();
     }
-
-    // Query<Map<String, dynamic>> getCartProduct = await FirebaseFirestore.instance
-    //     .collection('cart')
-    //     .where("order_id",
-    //     isEqualTo: Shared_Preference.getString("currentOrderId"));
-    // WriteBatch batch = FirebaseFirestore.instance.batch();
-    // batch.update();
-    // batch.commit();
-    CustomDialog().dialog(
-        context: context,
-        onPress: () {
-          print("orderButton calling");
-        },
-        isCancelAvailable: true,
-        title: "Payment Success",
-        successButtonName: "View Order",
-        content:
-            "Congrats...\nYour order is successfully placed...\nDo you want to view your order?");
-
-    this.context.loaderOverlay.hide();
-    // Navigator.of(context).push(MaterialPageRoute(
-    //   builder: (context) => VideoDescriptionScreen(
-    //     title: selectedVideoData["title"],
-    //     videoUrl: selectedVideoData["video_url"],
-    //     description: selectedVideoData["description"],
-    //   ),
-    // ));
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
