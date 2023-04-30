@@ -14,11 +14,13 @@ class DashboardController {
       isSuccess = await FirebaseMain().googleLogout();
       if (isSuccess) {
         Shared_Preference.setBool(SharedPreferenceKeys.isLogin, false);
-        Navigator.push(
+        Shared_Preference.clear();
+        Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
               builder: (context) => LoginScreen(),
-            ));
+            ),
+            (route) => false);
       }
     } catch (error) {
       if (error == FirebaseCollections.noInternetString) {

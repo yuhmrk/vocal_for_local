@@ -22,7 +22,15 @@
           }
         },
         {
-          "client_id": "390759305001-3hg21345gpen138mvc004cp95n7qrrsa.apps.googleusercontent.com",
+          "client_id": "390759305001-mrnondna2kvu5pd4f36d7jhi8ml5q6ep.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.vocal_for_local",
+            "certificate_hash": "a10f0275edc3e7e1f905d41fc382f0a57a799229"
+          }
+        },
+        {
+          "client_id": "390759305001-kd9cjo4uvmso1i29oabttdl81bq52hd6.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

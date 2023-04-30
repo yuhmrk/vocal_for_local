@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:vocal_for_local/terms_and_conditions/view/terms_and_conditions.dart';
 import 'package:vocal_for_local/videos/view/videos_list_screen.dart';
@@ -23,28 +25,51 @@ Drawer customDrawer(BuildContext context) {
                     Radius.circular(50),
                   ),
                   clipBehavior: Clip.hardEdge,
-                  child: Image.asset(
-                    "assets/images/profile_pic.jpg",
-                    fit: BoxFit.fill,
+                  child: CachedNetworkImage(
+                    imageUrl: FirebaseAuth.instance.currentUser?.photoURL ?? "",
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                   ),
                 ),
               ),
               const SizedBox(
                 height: 10,
               ),
-              Text(
-                "John",
-                style: Theme.of(context).textTheme.headline2?.copyWith(
-                      fontSize: 14,
-                      color: Colors.black,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Text(
+                      FirebaseAuth.instance.currentUser?.displayName ?? "",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headline2?.copyWith(
+                            fontSize: 14,
+                            color: Colors.black,
+                          ),
                     ),
+                  ),
+                ],
               ),
-              Text(
-                "John@gmaill.com",
-                style: Theme.of(context).textTheme.headline2?.copyWith(
-                      fontSize: 14,
-                      color: Colors.black,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Text(
+                      FirebaseAuth.instance.currentUser?.email ?? "",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headline2?.copyWith(
+                            fontSize: 14,
+                            color: Colors.black,
+                          ),
                     ),
+                  ),
+                ],
               ),
             ],
           ),

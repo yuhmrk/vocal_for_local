@@ -3,6 +3,7 @@ import 'package:vocal_for_local/liked_products/view/liked_products_screen.dart';
 import 'package:vocal_for_local/orders/view/order_list_screen.dart';
 
 import '../../dashboard/controller/dashboard_controller.dart';
+import '../../utils/colors.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -14,7 +15,8 @@ class SettingsScreen extends StatelessWidget {
         children: [
           SizedBox(
               height: MediaQuery.of(context).size.height / 2,
-              child: const Center(child: Text("your logo"))),
+              child: Center(
+                  child: Image.asset("assets/app_icon_splash/app_icon.jpg"))),
           ListTile(
             title: const Text("Orders"),
             trailing: const Icon(Icons.chevron_right),
@@ -28,6 +30,20 @@ class SettingsScreen extends StatelessWidget {
             )),
             trailing: const Icon(Icons.chevron_right),
             title: const Text("Liked Products"),
+          ),
+          Spacer(),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: ElevatedButton.icon(
+              icon: const Icon(Icons.logout),
+              label: const Text("Logout"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ThemeColors.primaryColor,
+              ),
+              onPressed: () {
+                DashboardController().signout(context);
+              },
+            ),
           )
         ],
       ),
